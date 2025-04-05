@@ -5,27 +5,62 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    private Rigidbody2D rb;
+    public float jumpDistance;
+    private float moveDistance;
+    private Vector2 targetPosition;
+    private bool buttonHeld;
+    private bool isJumping = false;
 
-    public void Jump(InputAction.CallbackContext context)
+
+    private void Awake()
     {
-        if (context.phase == InputActionPhase.Performed)
+        rb = GetComponent<Rigidbody2D>();
+    }
+
+    private void Update()
+    {
+        if (targetPosition.y - transform.position.y < 0.1f)
         {
-            // Perform jump action
-            Debug.Log("Jump action performed!"+ context.phase);
-            // Add jump logic here, e.g., apply force to the Rigidbody component
+            isJumping = false;
         }
     }
 
+    private void FixedUpdate()
+    {
+        rb.position = Vector2.Lerp(transform.position, targetPosition, 0.134f);
+    }
 
-    // // Start is called before the first frame update
-    // void Start()
-    // {
+    public void Jump(InputAction.CallbackContext context)
+    {
+        if (context.performed && !isJumping)
+        {
+            moveDistance = jumpDistance;
+            targetPosition = new Vector2(transform.position.x, transform.position.y + moveDistance);
+            isJumping = true;
+        }
 
-    // }
+    }
 
-    // // Update is called once per frame
-    // void Update()
-    // {
+    public void LongJump(InputAction.CallbackContext context)
+    {
+        if (context.performed && isJumping)
+        {
+            moveDistance = jumpDistance * 2;
+            buttonHeld = true;
+        }
 
-    // }
+        if (context.canceled && buttonHeld)
+        {
+            // Debug.Log("LongJump " + moveDistance);
+            buttonHeld = false;
+            targetPosition = new Vector2(transform.position.x, transform.position.y + moveDistance);
+            isJumping = true;
+        }
+    }
+
+    public void GetTouchPosition(InputAction.CallbackContext context)
+    {
+
+    }
 }
