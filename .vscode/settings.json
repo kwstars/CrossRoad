@@ -56,5 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "CrossRoad.sln"
+    "dotnet.defaultSolution": "CrossRoad.sln",
+    "dotnet.preferCSharpExtension": true
 }
